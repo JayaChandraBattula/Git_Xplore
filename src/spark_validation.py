@@ -3,14 +3,31 @@ from pyspark import SQLContext
 import re
 import psycopg2
 
+def main():
+    sc = SparkContext(master='EC2', appName='Search_Function')
+    sqlContext = SQLContext(sc)
+    #client = boto3.client('s3',aws_access_key_id = "XXXX", aws_secret_access_key = "XXXXX")
+    #s3 = boto3.resource('s3')
+    #obj = s3.get_object(Bucket='github-java-sample1', Key='s3://github-java-sample1/github_javarepo5m-000000000000.json')
+    #obj = s3.Object(Bucket='github-java-sample1', Key='s3://github-java-sample1/github_javarepo5m-000000000000.json')
+    #obj.get()['Body'].read().decode('utf-8')
+
+    for i in range(0,1):
+        name_num='{0:03}'.format(i)
+        fileName="s3n://*******/*******-000000000"+name_num+".json"
+        print(fileName)
+        df_rdd=sqlContext.read.json(filename).rdd
+        print("File "+fileName+" has "+df_rdd.count()+" records.")
+
+    output_values = ()
+    output_values = df_rdd.map(lambda x: data_retrieval(x))
 
 
-
-def read_jsonfile_fromS3(filename):
-    df_json = sqlContext.read.json(filename)
-    df_json.registerTempTable("tempTable")
-    df_json_rdd=sqlContext.sql("SELECT id, repo_name, path, size, content FROM tempTable where content != ''").rdd
-    return df_json_rdd
+#def read_jsonfile_fromS3(filename):
+    #df_json = sqlContext.read.json(filename)
+    #df_json.registerTempTable("tempTable")
+    #df_json_rdd=sqlContext.sql("SELECT id, repo_name, path, size, content FROM tempTable where content != ''").rdd
+    #return df_json_rdd
 
 
 
@@ -110,25 +127,6 @@ def get_methodname_dependencies(each_line):
                         duplicatedict["Method_Dependencies"].append(dependencies)
                         tempdict["Method_Dependencies"].append(set(duplicatedict["Method_Dependencies"]))
     return tempdict
-
-
-
-
-def main():
-    sc = SparkContext(master='EC2', appName='Search_Function')
-    sqlContext = SQLContext(sc)
-    client = boto3.client('s3',aws_access_key_id = "XXXX", aws_secret_access_key = "XXXXX")
-
-    for i in range(0,5):
-        name_num='{0:01}'.format(i)
-        fileName="s3a://*******/*******-000000000"+name_num+".json"
-        df_rdd=read_jsonfile_fromS3(filename)
-        print("File "+fileName+" has "+df_rdd.count()+" records.")
-
-    output_values = ()
-    output_values = df_rdd.map(lambda x: data_retrieval(x))
-
-
 
 if __name__ == "__main__":
      main()
