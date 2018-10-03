@@ -14,22 +14,11 @@ def main():
 
     for i in range(0,1):
         name_num='{0:03}'.format(i)
-        fileName="s3n://*******/*******-000000000"+name_num+".json"
+        fileName="s3n://*******/github_javarepo5m-000000000"+name_num+".json"
         print(fileName)
         df_rdd=sqlContext.read.json(filename).rdd
-        print("File "+fileName+" has "+df_rdd.count()+" records.")
-
-    output_values = ()
-    output_values = df_rdd.map(lambda x: data_retrieval(x))
-
-
-#def read_jsonfile_fromS3(filename):
-    #df_json = sqlContext.read.json(filename)
-    #df_json.registerTempTable("tempTable")
-    #df_json_rdd=sqlContext.sql("SELECT id, repo_name, path, size, content FROM tempTable where content != ''").rdd
-    #return df_json_rdd
-
-
+        print("File ",fileName," has ",df_rdd.count()," records.")
+        df_rdd.foreach(lambda x: data_retrieval(x)).cache()
 
 
 def data_retrieval(repo_eachrow):
@@ -37,45 +26,45 @@ def data_retrieval(repo_eachrow):
     outputdict={}
 
     try:
-        repo_name = repo[0].encode('ascii','ignore')
-        repo_id = repo[1].encode('ascii','ignore')
-        repo_path = repo[2].encode('ascii','ignore')
-        repo_size = repo[3].encode('ascii','ignore')
-        repo_content = repo[4].encode('ascii','ignore')
+        repo_content = repo_eachrow[0]
+
+        repo_id = repo_eachrow[1]
+        #print("repo_id",repo_id)
+        repo_path = repo_eachrow[2]
+        #print("repo_path",repo_path)
+        repo_name = repo_eachrow[3]
+        #print("repo_name",repo_name)
+        repo_size = repo_eachrow[4]
+        #print("repo_size", repo_size)
     except:
         return results
 
-    content_list=repo_content.split('\n')
-
-    if(len(content_list)<=1):
-        return results
-
-    class_name=get_classname(content_list)
-    method_name=get_methodname(content_list)
+    classname_foreachrepo=get_classname(repo_content)
+    print("class names",classname_foreachrepo)
 
     final_outputdict = dict()
     final_outputdict["repo_name"] =str(repo_name)
     final_outputdict["repo_id"] =str(repo_id)
     final_outputdict["repo_path"] =str(repo_path)
     final_outputdict["repo_size"] =str(repo_size)
-    final_outputdict["class_name"] =str(class_name)
-    final_outputdict["method_name"] =method_name.get_methodname  ## to get method name values
-    final_outputdict["method_dependencies"] =method_name.get_methodname_dependencies  ## to get method name values
+    final_outputdict["class_name"] = classname_foreachrepo
 
-    # results declaration
+    #code to insert to the database
 
 def get_classname(each_repo):
+    class_name=[]
+    str_contentlist=str(each_repo)
+    content_list=str_contentlist.split('\n')
+    print("length of content list for a row",len(content_list))
     for line in content_list:
-        list1=line.lstrip()
-        if ((each_repo.startswith('public')) or (each_repo.startswith('private')) or (each_repo.startswith('static'))):
+        each_line=line.lstrip()
+        if ((each_line.startswith('public')) or (each_line.startswith('private')) or (each_line.startswith('static'))):
             try:
                 start = ' class '
                 end = ' '
-                class_name = re.search('%s(.*)%s' % (start,end), list1).group()
-                #outputdict["Class_Name"].append(str(class_name))
+                class_name.append(re.search('%s(.*)%s'% (start,end), each_line).group(1))
             except AttributeError:
-                #outputdict["Class_Name"].append(str(class_name))
-                class_name="no class is present"
+                continue
     return class_name
 
 
