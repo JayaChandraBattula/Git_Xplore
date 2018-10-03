@@ -1,5 +1,4 @@
 import psycopg2
-import postgresconfig
 
 def main():
     #connect postgresql , inorder to insert to table
