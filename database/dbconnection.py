@@ -3,7 +3,7 @@ import psycopg2
 def main():
     #connect postgresql , inorder to insert to table
     try:
-        conn = psycopg2.connect(host="rds-postgresinstance.c5cn8wdvuzrw.us-east-1.rds.amazonaws.com",
+        conn = psycopg2.connect(host="*********************************************",
                                 dbname="mypostgresdb",user="chandra", password="Searchfunction")
         # Create table
         cur = conn.cursor()
