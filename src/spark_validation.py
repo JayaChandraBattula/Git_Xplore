@@ -4,18 +4,23 @@ import re
 import psycopg2
 
 def main():
-    sc = SparkContext( appName='Git Xplore')
+    sc = SparkContext( appName='Search_Function')
     sqlContext = SQLContext(sc)
+    #client = boto3.client('s3',aws_access_key_id = "XXXX", aws_secret_access_key = "XXXXX")
+    #s3 = boto3.resource('s3')
+    #obj = s3.get_object(Bucket='github-java-sample1', Key='s3://github-java-sample1/github_javarepo5m-000000000000.json')
+    #obj = s3.Object(Bucket='github-java-sample1', Key='s3://github-java-sample1/github_javarepo5m-000000000000.json')
+    #obj.get()['Body'].read().decode('utf-8')
 
     for i in range(0,1):
         name_num='{0:03}'.format(i)
-        fileName="s3a://github-java-sample1/github_javarepo5m-000000000"+name_num+".json"
+        fileName="D:\sample.json"
         print(fileName)
         df_rdd=sqlContext.read.json(fileName).rdd
         print("File ",fileName," has ",df_rdd.count()," records.")
         eachrdd_data=()
         eachrdd_data=df_rdd.foreach(lambda x: data_retrieval(x))
-        eachrdd_data.foreachPartition(postgres_insert)
+        eachrdd_data.foreachrdd(postgres_insert)
 
 def data_retrieval(repo_eachrow):
     results=()
@@ -33,19 +38,13 @@ def data_retrieval(repo_eachrow):
         repo_size = repo_eachrow[4].encode('ascii','ignore').decode('ascii')
         print("repo_size", repo_size)
     except:
-        return results
+        return results({'repo_name': 'no repo name', 'repo_id': 'no repo id', 'repo_path': 'no repo path', 'repo_size': '00',
+                        'class_name': ['no class name'], 'method_names': ['no method names'], 'method_dependencies': ['no method dependencies']},)
+
 
     str_contentlist = str(repo_content)
     classname_foreachrepo=get_classname(str_contentlist)
-    print("class names",classname_foreachrepo)
     methodname_foreachrepo,methoddependencies_foreachrepo=get_methodname_dependencies(str_contentlist)
-    print("method names ", methodname_foreachrepo)
-    print("method dependencies ", methoddependencies_foreachrepo)
-
-
-
-    #method_name=get_methodname(repo_content)
-    #print("method names",repo_name)
 
 
     final_outputdict = dict()
@@ -96,11 +95,10 @@ def get_classname(each_repo):
                 start = ' class '
                 end = ' '
                 class_name.append(re.search('%s(.*)%s'% (start,end), each_line).group(1))
-                #outputdict["Class_Name"].append(str(class_name))
             except AttributeError:
-                #outputdict["Class_Name"].append(str(class_name))
-                #class_name.append('no class is present')
                 continue
+    if not class_name:
+        class_name.append('no class name')
     return class_name
 
 
@@ -142,7 +140,10 @@ def get_methodname_dependencies(each_repo):
                         continue
                 else:
                     continue
-
+    if not methodname_list:
+        methodname_list.append('no method name')
+    if not methoddependencies_list:
+        methoddependencies_list.append('no method dependencies')
     return (methodname_list,methoddependencies_list)
 
 
