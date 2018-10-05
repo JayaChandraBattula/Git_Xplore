@@ -70,13 +70,14 @@ def postgres_insert(results):
                                 dbname="mypostgresdb",user="chandra", password="Searchfunction")
     except:
         print("Error in database connection")
-        cur = conn.cursor()
+
+    cur = conn.cursor()
 
     for x in results:
         # insert to postgresql database
         try:
-            cur.executemany("""INSERT INTO javarepos(repo_name, repo_id, repo_path, repo_size, class_name, method_names, method_dependencies ) \
-                 VALUES (%(repo_name)s,%(repo_id)s,%(repo_path)s, %(repo_size)s,%(class_name)s, %(method_names)s,%(method_dependencies)s)""", x)
+            cur.executemany("INSERT INTO javarepos(repo_name, repo_id, repo_path, repo_size, class_name, method_names, method_dependencies ) \
+                 VALUES (%s,%s,%s, %s,%s, %s,%s)
         except:
             print("Postgres Insertion Error ")
         conn.commit()
