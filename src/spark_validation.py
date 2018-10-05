@@ -14,7 +14,7 @@ def main():
 
     for i in range(0,1):
         name_num='{0:03}'.format(i)
-        fileName="D:\sample.json"
+        fileName="s3a://github-java-sample1/github_javarepo5m-000000000"+name_num+".json"
         print(fileName)
         df_rdd=sqlContext.read.json(fileName).rdd
         print("File ",fileName," has ",df_rdd.count()," records.")
