@@ -13,9 +13,9 @@ def main():
             repo_name text,
             repo_path text,
             repo_size text,
-            class_name text,
-            method_name text,
-            method_dependencies text,
+            class_name text[],
+            method_name text[],
+            method_dependencies text[],
         )
         """)
 

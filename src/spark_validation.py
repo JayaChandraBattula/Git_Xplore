@@ -4,22 +4,18 @@ import re
 import psycopg2
 
 def main():
-    sc = SparkContext(master='EC2', appName='Search_Function')
+    sc = SparkContext( appName='Git Xplore')
     sqlContext = SQLContext(sc)
-    #client = boto3.client('s3',aws_access_key_id = "XXXX", aws_secret_access_key = "XXXXX")
-    #s3 = boto3.resource('s3')
-    #obj = s3.get_object(Bucket='github-java-sample1', Key='s3://github-java-sample1/github_javarepo5m-000000000000.json')
-    #obj = s3.Object(Bucket='github-java-sample1', Key='s3://github-java-sample1/github_javarepo5m-000000000000.json')
-    #obj.get()['Body'].read().decode('utf-8')
 
     for i in range(0,1):
         name_num='{0:03}'.format(i)
-        fileName="s3n://*******/github_javarepo5m-000000000"+name_num+".json"
+        fileName="s3a://github-java-sample1/github_javarepo5m-000000000"+name_num+".json"
         print(fileName)
-        df_rdd=sqlContext.read.json(filename).rdd
+        df_rdd=sqlContext.read.json(fileName).rdd
         print("File ",fileName," has ",df_rdd.count()," records.")
-        df_rdd.foreach(lambda x: data_retrieval(x)).cache()
-
+        eachrdd_data=()
+        eachrdd_data=df_rdd.foreach(lambda x: data_retrieval(x))
+        eachrdd_data.foreachPartition(postgres_insert)
 
 def data_retrieval(repo_eachrow):
     results=()
@@ -29,18 +25,28 @@ def data_retrieval(repo_eachrow):
         repo_content = repo_eachrow[0]
 
         repo_id = repo_eachrow[1]
-        #print("repo_id",repo_id)
+        print("repo_id",repo_id)
         repo_path = repo_eachrow[2]
-        #print("repo_path",repo_path)
+        print("repo_path",repo_path)
         repo_name = repo_eachrow[3]
-        #print("repo_name",repo_name)
+        print("repo_name",repo_name)
         repo_size = repo_eachrow[4]
-        #print("repo_size", repo_size)
+        print("repo_size", repo_size)
     except:
         return results
 
-    classname_foreachrepo=get_classname(repo_content)
+    str_contentlist = str(repo_content)
+    classname_foreachrepo=get_classname(str_contentlist)
     print("class names",classname_foreachrepo)
+    methodname_foreachrepo,methoddependencies_foreachrepo=get_methodname_dependencies(str_contentlist)
+    print("method names ", methodname_foreachrepo)
+    print("method dependencies ", methoddependencies_foreachrepo)
+
+
+
+    #method_name=get_methodname(repo_content)
+    #print("method names",repo_name)
+
 
     final_outputdict = dict()
     final_outputdict["repo_name"] =str(repo_name)
@@ -48,27 +54,17 @@ def data_retrieval(repo_eachrow):
     final_outputdict["repo_path"] =str(repo_path)
     final_outputdict["repo_size"] =str(repo_size)
     final_outputdict["class_name"] = classname_foreachrepo
+    final_outputdict["method_names"] = methodname_foreachrepo
+    final_outputdict["method_dependencies"] = methoddependencies_foreachrepo
 
-    #code to insert to the database
+    results=results +(final_outputdict,)
 
-def get_classname(each_repo):
-    class_name=[]
-    str_contentlist=str(each_repo)
-    content_list=str_contentlist.split('\n')
-    print("length of content list for a row",len(content_list))
-    for line in content_list:
-        each_line=line.lstrip()
-        if ((each_line.startswith('public')) or (each_line.startswith('private')) or (each_line.startswith('static'))):
-            try:
-                start = ' class '
-                end = ' '
-                class_name.append(re.search('%s(.*)%s'% (start,end), each_line).group(1))
-            except AttributeError:
-                continue
-    return class_name
+    print(results)
+
+    return results
+
 
 def postgres_insert(results):
-
     #connect postgresql for each worker, inorder to insert to table
     try:
         conn = psycopg2.connect(host="rds-postgresinstance.c5cn8wdvuzrw.us-east-1.rds.amazonaws.com",
@@ -80,62 +76,75 @@ def postgres_insert(results):
     for x in results:
         # insert to postgresql database
         try:
-            cur.executemany("""INSERT INTO github_function(repo_name, class_name, function_name, function_input, function_out, repo_id) \
-                 VALUES (%(repo_name)s,%(class_name)s,%(function_name)s, %(function_input)s,%(function_out)s, %(repo_id)s)""", x)
+            cur.executemany("""INSERT INTO javarepos(repo_name, repo_id, repo_path, repo_size, class_name, method_names, method_dependencies ) \
+                 VALUES (%(repo_name)s,%(repo_id)s,%(repo_path)s, %(repo_size)s,%(class_name)s, %(method_names)s,%(method_dependencies)s)""", x)
         except:
-            print "Postgres Insertion Error "
+            print("Postgres Insertion Error ")
         conn.commit()
         cur.close()
 
     conn.close()
 
-def get_methodname_dependencies(each_line):
+def get_classname(each_repo):
+    class_name=[]
+    content_list=each_repo.split('\n')
+    print("length of content list for a row",len(content_list))
+    for line in content_list:
+        each_line=line.lstrip()
+        if ((each_line.startswith('public')) or (each_line.startswith('private')) or (each_line.startswith('static'))):
+            try:
+                start = ' class '
+                end = ' '
+                class_name.append(re.search('%s(.*)%s'% (start,end), each_line).group(1))
+                #outputdict["Class_Name"].append(str(class_name))
+            except AttributeError:
+                #outputdict["Class_Name"].append(str(class_name))
+                #class_name.append('no class is present')
+                continue
+    return class_name
+
+
+def get_methodname_dependencies(each_repo):
+    content_list = each_repo.split('\n')
+    methodname_list = []
+    methoddependencies_list = []
+    count = 0
 
     for line in content_list:
-        list1=line.lstrip()
-        method_name=''
-        tempdict={}
-        duplicatedict={}
-        duplicatedict.setdefault("Method_Dependencies", [])
-        tempdict.setdefault("Method_Name", [])
-        tempdict.setdefault("Method_Dependencies", [])
+        method_name = ''
+        each_line = line.lstrip()
 
-        if ((each_line.startswith('public')) or (each_line.startswith('private')) or (each_line.startswith('protected'))):
-            #print(list1)
+        if ((each_line.startswith('public')) or (each_line.startswith('private')) or (
+        each_line.startswith('protected'))):
             try:
-                method_name = (str(re.search('\s\w+[(]+', list1).group())[:-1]).lstrip()
-                #print(method_name)
-                #new_methodname=((str(method_name))[:-1]).lstrip()
-                if( (method_name!=None) and ((list1.endswith('{')) or (list1[:-1].endswith('{'))) ):
-                    tempdict["Method_Name"].append(method_name)
-                    count=1;
+                method_name = (str(re.search('\s\w+[(]+', each_line).group())[:-1]).lstrip()
+                if ((method_name != None) and ((each_line.endswith('{')) or (each_line[:-1].endswith('{')))):
+                    methodname_list.append(method_name)
+                    count = 1
             except AttributeError:
-                method_name="No methods in this class"
-                tempdict["Method_Name"].append(method_name)
-
-        if(count>=1):
-            if (count==1 and method_name!=''):
                 continue
-            for letter in list1:
-                if(letter=='{'):
-                    count +=1
-                    print(" { count ",count)
-                elif(letter=='}'):
-                    count -=1
-                    print(" } count ",count)
-                elif(letter=='('):
+
+        if (count >= 1):
+            if (count == 1 and method_name != ''):
+                continue
+            for letter in each_line:
+                if (letter == '{'):
+                    count += 1
+                elif (letter == '}'):
+                    count -= 1
+                elif (letter == '('):
                     try:
-                        dependencies = (str(re.search('\w+[(]+', list1).group())[:-1]).lstrip()
-                        #dependencies.append(tempdepend)
-                        print("dependencies ",dependencies)
-                        if(dependencies!=None):
-                            duplicatedict["Method_Dependencies"].append(dependencies)
-                            tempdict["Method_Dependencies"].append(set(duplicatedict["Method_Dependencies"]))
+                        method_dependencies = str(re.search('\w+[(]+', each_line).group())[:-1].lstrip()
+                        if (method_dependencies != None and method_dependencies not in methoddependencies_list
+                                and method_dependencies not in ['println', 'get']):
+                            methoddependencies_list.append(method_dependencies)
                     except AttributeError:
-                        dependencies = "No dependencies for the method"
-                        duplicatedict["Method_Dependencies"].append(dependencies)
-                        tempdict["Method_Dependencies"].append(set(duplicatedict["Method_Dependencies"]))
-    return tempdict
+                        continue
+                else:
+                    continue
+
+    return (methodname_list,methoddependencies_list)
+
 
 if __name__ == "__main__":
      main()
