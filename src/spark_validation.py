@@ -22,15 +22,15 @@ def data_retrieval(repo_eachrow):
     outputdict={}
 
     try:
-        repo_content = repo_eachrow[0]
+        repo_content = repo_eachrow[0].encode('ascii','ignore').decode('ascii')
 
-        repo_id = repo_eachrow[1]
+        repo_id = repo_eachrow[1].encode('ascii','ignore').decode('ascii')
         print("repo_id",repo_id)
-        repo_path = repo_eachrow[2]
+        repo_path = repo_eachrow[2].encode('ascii','ignore').decode('ascii')
         print("repo_path",repo_path)
-        repo_name = repo_eachrow[3]
+        repo_name = repo_eachrow[3].encode('ascii','ignore').decode('ascii')
         print("repo_name",repo_name)
-        repo_size = repo_eachrow[4]
+        repo_size = repo_eachrow[4].encode('ascii','ignore').decode('ascii')
         print("repo_size", repo_size)
     except:
         return results
