@@ -67,7 +67,27 @@ def get_classname(each_repo):
                 continue
     return class_name
 
+def postgres_insert(results):
 
+    #connect postgresql for each worker, inorder to insert to table
+    try:
+        conn = psycopg2.connect(host="rds-postgresinstance.c5cn8wdvuzrw.us-east-1.rds.amazonaws.com",
+                                dbname="mypostgresdb",user="chandra", password="Searchfunction")
+    except:
+        print("Error in database connection")
+        cur = conn.cursor()
+
+    for x in results:
+        # insert to postgresql database
+        try:
+            cur.executemany("""INSERT INTO github_function(repo_name, class_name, function_name, function_input, function_out, repo_id) \
+                 VALUES (%(repo_name)s,%(class_name)s,%(function_name)s, %(function_input)s,%(function_out)s, %(repo_id)s)""", x)
+        except:
+            print "Postgres Insertion Error "
+        conn.commit()
+        cur.close()
+
+    conn.close()
 
 def get_methodname_dependencies(each_line):
 
