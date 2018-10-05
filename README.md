@@ -9,4 +9,4 @@
 - Data is extracted from the Google Big Query tables by querying (with the help of Big Query and standard SQL) the required fields and saving it in the Google Cloud Platform.
 - Data is then migrated from GCP to Amazon S3 bucket and is processed with the help of spark job.
 
-![Image Datapipeline](https://github.com/images/pipeline.png)
+![Image Datapipeline](https://github.com/JayaChandraBathula/Git_Xplore/images/pipeline.png)
