@@ -19,7 +19,9 @@ def main():
         )
         ")
         cur.executemany("INSERT INTO javarepos(repo_name, repo_id, repo_path, repo_size, class_name, method_names, method_dependencies ) \
-                 VALUES ()
+                 VALUES ('chandra/src','njkdgxudd8958t4hjkf','hdhf/jjd/djfgseu/gsyuej/hfse.java','345',
+                 ['dhverjrnciuc','fguyferfi','jehfyuergbjrg'],['vrdkuhgjk','vdjxvb']
+                 ['hjdvhvd','gfhgdrkjgb'])
 
         conn.commit()
         conn.close()
