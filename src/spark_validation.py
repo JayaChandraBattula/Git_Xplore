@@ -83,7 +83,7 @@ def postgres_insert(results):
         conn.commit()
         cur.close()
 
-    conn.close()
+        conn.close()
 
 def get_classname(each_repo):
     class_name=[]
