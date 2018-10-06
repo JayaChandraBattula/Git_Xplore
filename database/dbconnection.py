@@ -7,7 +7,7 @@ def main():
                                 dbname="mypostgresdb",user="chandra", password="Searchfunction")
         # Create table
         cur = conn.cursor()
-        cur.execute("""
+        cur.execute("
         CREATE TABLE IF NOT EXISTS javarepos(
             repo_id text PRIMARY KEY,
             repo_name text,
@@ -17,7 +17,9 @@ def main():
             method_name text[],
             method_dependencies text[],
         )
-        """)
+        ")
+        cur.executemany("INSERT INTO javarepos(repo_name, repo_id, repo_path, repo_size, class_name, method_names, method_dependencies ) \
+                 VALUES ()
 
         conn.commit()
         conn.close()
