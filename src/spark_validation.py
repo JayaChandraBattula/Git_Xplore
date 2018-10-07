@@ -6,21 +6,16 @@ import psycopg2
 def main():
     sc = SparkContext( appName='Search_Function')
     sqlContext = SQLContext(sc)
-    #client = boto3.client('s3',aws_access_key_id = "XXXX", aws_secret_access_key = "XXXXX")
-    #s3 = boto3.resource('s3')
-    #obj = s3.get_object(Bucket='github-java-sample1', Key='s3://github-java-sample1/github_javarepo5m-000000000000.json')
-    #obj = s3.Object(Bucket='github-java-sample1', Key='s3://github-java-sample1/github_javarepo5m-000000000000.json')
-    #obj.get()['Body'].read().decode('utf-8')
 
     for i in range(0,1):
         name_num='{0:03}'.format(i)
         fileName="s3a://github-java-sample1/github_javarepo5m-000000000"+name_num+".json"
         print(fileName)
-        df_rdd=sqlContext.read.json(fileName).rdd
-        print("File ",fileName," has ",df_rdd.count()," records.")
-        eachrdd_data=()
-        eachrdd_data=df_rdd.foreach(lambda x: data_retrieval(x))
-        eachrdd_data.foreachrdd(postgres_insert)
+        eachfile_rdd=sqlContext.read.json(fileName).rdd
+        print("File ",fileName," has ",eachfile_rdd.count()," records.")
+        eachrdd_data=eachfile_rdd.map(lambda x: data_retrieval(x))
+        eachrdd_data.foreach(postgres_insert)
+
 
 def data_retrieval(repo_eachrow):
     results=()
@@ -28,7 +23,6 @@ def data_retrieval(repo_eachrow):
 
     try:
         repo_content = repo_eachrow[0].encode('ascii','ignore').decode('ascii')
-
         repo_id = repo_eachrow[1].encode('ascii','ignore').decode('ascii')
         print("repo_id",repo_id)
         repo_path = repo_eachrow[2].encode('ascii','ignore').decode('ascii')
@@ -38,9 +32,7 @@ def data_retrieval(repo_eachrow):
         repo_size = repo_eachrow[4].encode('ascii','ignore').decode('ascii')
         print("repo_size", repo_size)
     except:
-        return results({'repo_name': 'no repo name', 'repo_id': 'no repo id', 'repo_path': 'no repo path', 'repo_size': '00',
-                        'class_name': ['no class name'], 'method_names': ['no method names'], 'method_dependencies': ['no method dependencies']},)
-
+        return results
 
     str_contentlist = str(repo_content)
     classname_foreachrepo=get_classname(str_contentlist)
@@ -52,9 +44,9 @@ def data_retrieval(repo_eachrow):
     final_outputdict["repo_id"] =str(repo_id)
     final_outputdict["repo_path"] =str(repo_path)
     final_outputdict["repo_size"] =str(repo_size)
-    final_outputdict["class_name"] = classname_foreachrepo
-    final_outputdict["method_names"] = methodname_foreachrepo
-    final_outputdict["method_dependencies"] = methoddependencies_foreachrepo
+    final_outputdict["class_name"] = str(classname_foreachrepo)
+    final_outputdict["method_names"] = str(methodname_foreachrepo)
+    final_outputdict["method_dependencies"] = str(methoddependencies_foreachrepo)
 
     results=results +(final_outputdict,)
 
@@ -74,16 +66,17 @@ def postgres_insert(results):
     cur = conn.cursor()
 
     for x in results:
-        # insert to postgresql database
-        try:
-            cur.executemany("INSERT INTO javarepos(repo_name, repo_id, repo_path, repo_size, class_name, method_names, method_dependencies ) \
-                 VALUES (%s,%s,%s, %s,%s, %s,%s)
-        except:
-            print("Postgres Insertion Error ")
-        conn.commit()
-        cur.close()
-
-        conn.close()
+        if (x == ()):
+            continue
+        else:
+            try: ## insert to postgresql database
+                cur.executemany("""INSERT INTO javarepos(repo_name, repo_id, repo_path, repo_size, class_name, method_names, method_dependencies ) \
+                     VALUES (%s,%s,%s, %s,%s, %s,%s)""",x)
+            except:
+                print("Postgres Insertion Error ")
+            conn.commit()
+    cur.close()
+    conn.close()
 
 def get_classname(each_repo):
     class_name=[]

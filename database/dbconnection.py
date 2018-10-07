@@ -2,12 +2,9 @@ import psycopg2
 
 def main():
     #connect postgresql , inorder to insert to table
-
     try:
-
         conn = psycopg2.connect(host="XX",
                                dbname="mypostgresdb",user="chandra", password="Searchfunction")
-
         # Create table
         cur = conn.cursor()
         cur.execute("""
