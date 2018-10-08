@@ -15,8 +15,9 @@ def main():
         eachfile_rdd=sqlContext.read.json(fileName).rdd
         #print(eachfile_rdd.take(5))
         print("File ",fileName," has ",eachfile_rdd.count()," records.")
+        eachrdd_data=eachfile_rdd.map(lambda x: data_retrieval(x))
         hasattr(eachrdd_data,"toDF")
-        df=eachfile_rdd.toDF(schema=['repo_name', 'repo_id', 'repo_path', 'repo_size',
+        df=eachrdd_data.toDF(schema=['repo_name', 'repo_id', 'repo_path', 'repo_size',
                         'class_name', 'method_names', 'method_dependencies'])
         df.show()
         #df.write.mode('append').jdbc(url="rds-postgresinstance.c5cn8wdvuzrw.us-east-1.rds.amazonaws.com",
