@@ -13,14 +13,9 @@ def main():
         print(fileName)
         eachfile_rdd=sqlContext.read.json(fileName).rdd
         print("File ",fileName," has ",eachfile_rdd.count()," records.")
-        eachrdd_data=eachfile_rdd.map(lambda x: data_retrieval(x))
-        eachrdd_data.foreach(postgres_insert)
-        hasattr(eachrdd_data,"toDF")
-        df=eachrdd_data.toDF(schema=['repo_name', 'repo_id', 'repo_path', 'repo_size',
-                        'class_name', 'method_names', 'method_dependencies'])
-        df.show()
-        df.write.mode('append').jdbc(url="rds-postgresinstance.c5cn8wdvuzrw.us-east-1.rds.amazonaws.com",
-                table="javarepos", properties={"driver": "org.postgresql.Driver"})
+        eachrdd_data=eachfile_rdd.map(lambda x: data_retrieval(x)).foreachPartition(postgres_insert)
+        print(eachfile_rdd.take(5))
+
 
 def data_retrieval(repo_eachrow):
     results=()
@@ -61,29 +56,29 @@ def data_retrieval(repo_eachrow):
     return results
 
 
-# def postgres_insert(results):
-#     #connect postgresql for each worker, inorder to insert to table
-#     try:
-#         conn = psycopg2.connect(host="rds-postgresinstance.c5cn8wdvuzrw.us-east-1.rds.amazonaws.com",
-#                                 dbname="mypostgresdb",user="chandra", password="Searchfunction")
-#     except:
-#         print("Error in database connection")
-#
-#     cur = conn.cursor()
-#
-#     for x in results:
-#         if (x == ()):
-#             print("X values in post method  ",x)
-#             continue
-#         else:
-#             try: ## insert to postgresql database
-#                 cur.executemany("INSERT INTO javarepos(repo_name, repo_id, repo_path, repo_size, class_name, method_names, method_dependencies ) \
-#                      VALUES (%s,%s,%s, %s,%s, %s,%s)",x)
-#             except:
-#                 print("Postgres Insertion Error ")
-#             conn.commit()
-#     cur.close()
-#     conn.close()
+def postgres_insert(results):
+    #connect postgresql for each worker, inorder to insert to table
+    try:
+        conn = psycopg2.connect(host="rds-postgresinstance.c5cn8wdvuzrw.us-east-1.rds.amazonaws.com",
+                                dbname="mypostgresdb",user="chandra", password="Searchfunction")
+    except:
+        print("Error in database connection")
+
+    cur = conn.cursor()
+
+    for x in results:
+        if (x == ()):
+            print("X values in post method  ",x)
+            continue
+        else:
+            try: ## insert to postgresql database
+                cur.executemany("INSERT INTO javarepos(repo_name, repo_id, repo_path, repo_size, class_name, method_names, method_dependencies ) \
+                     VALUES (%s,%s,%s, %s,%s, %s,%s)",x)
+            except:
+                print("Postgres Insertion Error ")
+            conn.commit()
+    cur.close()
+    conn.close()
 
 
 def get_classname(each_repo):
