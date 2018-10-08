@@ -12,9 +12,10 @@ def main():
         fileName="s3a://github-java-sample1/github_javarepo5m-000000000"+name_num+".json"
         print(fileName)
         eachfile_rdd=sqlContext.read.json(fileName).rdd
+        #print(eachfile_rdd.take(5))
         print("File ",fileName," has ",eachfile_rdd.count()," records.")
         eachrdd_data=eachfile_rdd.map(lambda x: data_retrieval(x)).foreachPartition(postgres_insert)
-        print(eachfile_rdd.take(5))
+        print(eachrdd_data.take(5))
 
 
 def data_retrieval(repo_eachrow):
