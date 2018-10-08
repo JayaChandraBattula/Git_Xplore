@@ -15,7 +15,7 @@ def main():
         #print(eachfile_rdd.take(5))
         print("File ",fileName," has ",eachfile_rdd.count()," records.")
         eachrdd_data=eachfile_rdd.map(lambda x: data_retrieval(x)).foreachPartition(postgres_insert)
-        print(eachrdd_data.take(5))
+        eachrdd_data.take(5)
 
 
 def data_retrieval(repo_eachrow):
