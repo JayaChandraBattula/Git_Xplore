@@ -38,17 +38,18 @@ def data_retrieval(repo_eachrow):
     classname_foreachrepo=get_classname(str_contentlist)
     methodname_foreachrepo,methoddependencies_foreachrepo=get_methodname_dependencies(str_contentlist)
 
+    temptuple=(repo_name,repo_id,repo_path,repo_size,str(classname_foreachrepo),str(methodname_foreachrepo),str(methoddependencies_foreachrepo))
 
-    final_outputdict = dict()
+    """final_outputdict = dict()
     final_outputdict["repo_name"] =str(repo_name)
     final_outputdict["repo_id"] =str(repo_id)
     final_outputdict["repo_path"] =str(repo_path)
     final_outputdict["repo_size"] =str(repo_size)
     final_outputdict["class_name"] = str(classname_foreachrepo)
     final_outputdict["method_names"] = str(methodname_foreachrepo)
-    final_outputdict["method_dependencies"] = str(methoddependencies_foreachrepo)
+    final_outputdict["method_dependencies"] = str(methoddependencies_foreachrepo)"""
 
-    results=results +(final_outputdict,)
+    results=results +temptuple
 
     print(results)
 
@@ -67,19 +68,21 @@ def postgres_insert(results):
 
     for x in results:
         if (x == ()):
+            print("X values in post method  ",x)
             continue
         else:
             try: ## insert to postgresql database
-                cur.executemany("""INSERT INTO javarepos(repo_name, repo_id, repo_path, repo_size, class_name, method_names, method_dependencies ) \
-                     VALUES (%s,%s,%s, %s,%s, %s,%s)""",x)
+                cur.executemany("INSERT INTO javarepos(repo_name, repo_id, repo_path, repo_size, class_name, method_names, method_dependencies ) \
+                     VALUES (%s,%s,%s, %s,%s, %s,%s)",x)
             except:
                 print("Postgres Insertion Error ")
             conn.commit()
     cur.close()
     conn.close()
 
+d
 def get_classname(each_repo):
-    class_name=[]
+    class_name=set()
     content_list=each_repo.split('\n')
     print("length of content list for a row",len(content_list))
     for line in content_list:
@@ -88,22 +91,26 @@ def get_classname(each_repo):
             try:
                 start = ' class '
                 end = ' '
-                class_name.append(re.search('%s(.*)%s'% (start,end), each_line).group(1))
+                class_name.add(re.search('%s(.*)%s'% (start,end), each_line).group(1))
+                #print(class_name)
+                #outputdict["Class_Name"].append(str(class_name))
             except AttributeError:
+                #outputdict["Class_Name"].append(str(class_name))
+                #class_name.append('no class is present')
                 continue
     if not class_name:
-        class_name.append('no class name')
+        class_name.add("no class name")
     return class_name
 
 
 def get_methodname_dependencies(each_repo):
     content_list = each_repo.split('\n')
-    methodname_list = []
-    methoddependencies_list = []
+    methodname_set = set()
+    methoddependencies_set = set()
     count = 0
 
     for line in content_list:
-        method_name = ''
+        method_name = ""
         each_line = line.lstrip()
 
         if ((each_line.startswith('public')) or (each_line.startswith('private')) or (
@@ -111,7 +118,7 @@ def get_methodname_dependencies(each_repo):
             try:
                 method_name = (str(re.search('\s\w+[(]+', each_line).group())[:-1]).lstrip()
                 if ((method_name != None) and ((each_line.endswith('{')) or (each_line[:-1].endswith('{')))):
-                    methodname_list.append(method_name)
+                    methodname_set.add(method_name)
                     count = 1
             except AttributeError:
                 continue
@@ -127,18 +134,19 @@ def get_methodname_dependencies(each_repo):
                 elif (letter == '('):
                     try:
                         method_dependencies = str(re.search('\w+[(]+', each_line).group())[:-1].lstrip()
-                        if (method_dependencies != None and method_dependencies not in methoddependencies_list
+                        if (method_dependencies != None and method_dependencies not in methoddependencies_set
                                 and method_dependencies not in ['println', 'get']):
-                            methoddependencies_list.append(method_dependencies)
+                            methoddependencies_set.add(method_dependencies)
                     except AttributeError:
                         continue
                 else:
                     continue
-    if not methodname_list:
-        methodname_list.append('no method name')
-    if not methoddependencies_list:
-        methoddependencies_list.append('no method dependencies')
-    return (methodname_list,methoddependencies_list)
+    if not methodname_set:
+        methodname_set.add("no method name")
+    if not methoddependencies_set:
+        methoddependencies_set.add("no method dependencies")
+    return (methodname_set,methoddependencies_set)
+
 
 
 if __name__ == "__main__":

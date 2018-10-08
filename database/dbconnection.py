@@ -24,7 +24,7 @@ def postgres_insert(results):
         else:
             try:  ## insert to postgresql database
                 cur.executemany("""INSERT INTO javarepos(repo_name, repo_id, repo_path, repo_size, class_name, method_names, method_dependencies ) \
-                         VALUES (%(repo_name)s,%(repo_id)s,%(repo_path)s, %(repo_size)s,%(class_name)s, %(method_names)s,%(method_dependencies)s)""", x)
+                         VALUES (%s,%s,%s, %s,%s, %(method_names)s,%(method_dependencies)s)""", x)
             except:
                 print("Postgres Insertion Error ")
             conn.commit()
