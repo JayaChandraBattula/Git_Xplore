@@ -6,9 +6,7 @@ import psycopg2
 def main():
     sc = SparkContext( appName='Search_Function')
     sqlContext = SQLContext(sc)
-    sc1 = SparkContext.getOrCreate()
-    log4jLogger = sc1._jvm.org.apache.log4j
-    log = log4jLogger.LogManager.getLogger(__name__)
+
 
     for i in range(0,1):
         name_num='{0:03}'.format(i)
@@ -22,6 +20,11 @@ def main():
 
 
 def data_retrieval(repo_eachrow):
+
+    sc1 = SparkContext.getOrCreate()
+    log4jLogger = sc1._jvm.org.apache.log4j
+    log = log4jLogger.LogManager.getLogger(__name__)
+    
     results=()
     outputdict={}
 
