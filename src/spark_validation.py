@@ -29,15 +29,15 @@ def data_retrieval(repo_eachrow):
         repo_content = repo_eachrow[0].encode('ascii','ignore').decode('ascii')
         repo_id = repo_eachrow[1].encode('ascii','ignore').decode('ascii')
         print("repo_id",repo_id)
-        //log.warn("repo_id "repo_id)
+        #log.warn("repo_id "repo_id)
         repo_path = repo_eachrow[2].encode('ascii','ignore').decode('ascii')
-        //log.warn("repo_path "repo_path)
+        #log.warn("repo_path "repo_path)
         repo_name = repo_eachrow[3].encode('ascii','ignore').decode('ascii')
         print("repo_name",repo_name)
-        //log.warn("repo_name "repo_name)
+        #log.warn("repo_name "repo_name)
         repo_size = repo_eachrow[4].encode('ascii','ignore').decode('ascii')
         print("repo_size", repo_size)
-        //log.warn("size "repo_size)
+        #log.warn("size "repo_size)
     except:
         return results
 
