@@ -6,6 +6,9 @@ import psycopg2
 def main():
     sc = SparkContext( appName='Search_Function')
     sqlContext = SQLContext(sc)
+    sc1 = SparkContext.getOrCreate()
+    log4jLogger = sc1._jvm.org.apache.log4j
+    log = log4jLogger.LogManager.getLogger(__name__)
 
     for i in range(0,1):
         name_num='{0:03}'.format(i)
@@ -26,12 +29,15 @@ def data_retrieval(repo_eachrow):
         repo_content = repo_eachrow[0].encode('ascii','ignore').decode('ascii')
         repo_id = repo_eachrow[1].encode('ascii','ignore').decode('ascii')
         print("repo_id",repo_id)
+        //log.warn("repo_id "repo_id)
         repo_path = repo_eachrow[2].encode('ascii','ignore').decode('ascii')
-        print("repo_path",repo_path)
+        //log.warn("repo_path "repo_path)
         repo_name = repo_eachrow[3].encode('ascii','ignore').decode('ascii')
         print("repo_name",repo_name)
+        //log.warn("repo_name "repo_name)
         repo_size = repo_eachrow[4].encode('ascii','ignore').decode('ascii')
         print("repo_size", repo_size)
+        //log.warn("size "repo_size)
     except:
         return results
 
@@ -53,6 +59,7 @@ def data_retrieval(repo_eachrow):
     results=results +temptuple
 
     print(results)
+    log.warn("{} results ".format(results))
 
     return results
 
@@ -69,7 +76,7 @@ def postgres_insert(results):
 
     for x in results:
         if (x == ()):
-            print("X values in post method  ",x)
+            log.warn("X values in post method  ",{x})
             continue
         else:
             try: ## insert to postgresql database
