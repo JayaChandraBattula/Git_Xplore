@@ -26,7 +26,7 @@ def main():
         #eachrdd_data=eachfile_rdd.map(lambda x: data_retrieval(x)).foreachPartition(postgres_insert)
         #eachrdd_data.take(5)
         #mode = "append"
-        url="jdbc:postgresql://rds-postgresinstance.c5cn8wdvuzrw.us-east-1.rds.amazonaws.com:5432"
+        url="jdbc:postgresql://rds-postgresinstance.c5cn8wdvuzrw.us-east-1.rds.amazonaws.com:5432/"
         #properties = {"dbname"="mypostgresdb","user": "chandra","password": "Searchfunction","driver": "org.postgresql.Driver"}
         try:
             df.write.mode('append').jdbc(url=url, table="javarepos",
