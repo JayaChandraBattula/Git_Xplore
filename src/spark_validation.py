@@ -28,11 +28,10 @@ def main():
         #mode = "append"
         url="jdbc:postgresql://rds-postgresinstance.c5cn8wdvuzrw.us-east-1.rds.amazonaws.com:5432/"
         #properties = {"dbname"="mypostgresdb","user": "chandra","password": "Searchfunction","driver": "org.postgresql.Driver"}
-        try:
-            df.write.mode('append').jdbc(url=url, table="javarepos",
-            properties = {"dbname":"mypostgresdb","user": "chandra","password": "Searchfunction","driver": "org.postgresql.Driver"})
-        except:
-            print("exception")
+        df.write.mode('append').jdbc(url=url, table="javarepos",
+        properties = {"dbname":"mypostgresdb","user": "chandra","password": "Searchfunction","driver": "org.postgresql.Driver"})
+
+        print("exception")
 
 
 def data_retrieval(repo_eachrow):
