@@ -10,6 +10,8 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 colors = {
     'background': '#111111',
     'text': '#7FDBFF'
+    'font-family': 'Arial, Helvetica, sans-serif';
+	'font-size':0.9em;
 }
 
 app.layout = html.Div(style={'backgroundColor': colors['background']}, children=[
