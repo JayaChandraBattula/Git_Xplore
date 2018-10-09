@@ -25,10 +25,14 @@ def main():
         #postgres_insert(df)
         #eachrdd_data=eachfile_rdd.map(lambda x: data_retrieval(x)).foreachPartition(postgres_insert)
         #eachrdd_data.take(5)
-        mode = "append"
+        #mode = "append"
         url="jdbc:postgresql://rds-postgresinstance.c5cn8wdvuzrw.us-east-1.rds.amazonaws.com:5432"
-        properties = {"user": "chandra","password": "Searchfunction","driver": "org.postgresql.Driver"}
-        df.write.jdbc(url=url, table="javarepos", mode=mode, properties=properties)
+        #properties = {"dbname"="mypostgresdb","user": "chandra","password": "Searchfunction","driver": "org.postgresql.Driver"}
+        try:
+            df.write.mode('append').jdbc(url=url, table="javarepos",
+            properties = {"dbname"="mypostgresdb","user": "chandra","password": "Searchfunction","driver": "org.postgresql.Driver"})
+        except:
+            print("exception")
 
 
 def data_retrieval(repo_eachrow):
