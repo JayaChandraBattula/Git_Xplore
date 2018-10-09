@@ -19,6 +19,8 @@ def main():
         hasattr(eachrdd_data,"toDF")
         df=eachrdd_data.toDF(schema=['repo_name', 'repo_id', 'repo_path', 'repo_size',
                         'class_name', 'method_names', 'method_dependencies'])
+
+        df=df.na.drop(thresh=7)
         df.show()
         #df.write.mode('append').jdbc(url="rds-postgresinstance.c5cn8wdvuzrw.us-east-1.rds.amazonaws.com",
                     #table="javarepos", properties={"driver": "org.postgresql.Driver"})
