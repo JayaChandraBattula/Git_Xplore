@@ -30,7 +30,7 @@ def main():
         #properties = {"dbname"="mypostgresdb","user": "chandra","password": "Searchfunction","driver": "org.postgresql.Driver"}
         try:
             df.write.mode('append').jdbc(url=url, table="javarepos",
-            properties = {"dbname"="mypostgresdb","user": "chandra","password": "Searchfunction","driver": "org.postgresql.Driver"})
+            properties = {"dbname":"mypostgresdb","user": "chandra","password": "Searchfunction","driver": "org.postgresql.Driver"})
         except:
             print("exception")
 
