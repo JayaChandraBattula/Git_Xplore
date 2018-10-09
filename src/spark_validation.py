@@ -27,11 +27,9 @@ def main():
         #eachrdd_data.take(5)
         #mode = "append"
         url="jdbc:postgresql://rds-postgresinstance.c5cn8wdvuzrw.us-east-1.rds.amazonaws.com:5432/mypostgresdb"
-        #properties = {"dbname"="mypostgresdb","user": "chandra","password": "Searchfunction","driver": "org.postgresql.Driver"}
-        df.write.mode('append').jdbc(url=url, table="javarepos",
-        properties = {"user": "chandra","password": "Searchfunction","driver": "org.postgresql.Driver"})
+        properties = {"user": "chandra","password": "Searchfunction","driver": "org.postgresql.Driver"}
+        df.write.mode('append').jdbc(url=url, table="javarepos",properties =properties )
 
-        print("exception")
 
 
 def data_retrieval(repo_eachrow):
