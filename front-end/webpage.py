@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import *
 from flask import render_template, request, flash, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
 from psycopg2.extras import RealDictCursor
@@ -22,9 +22,14 @@ db=SQLAlchemy(app)
 
 
 @app.route("/home", methods=["GET", "POST"])
-def webhome_getdata():
-    repo_name = request.form['repo_name']
-    class_name = request.form['class_name']
+def home():
+     if flask.request.method == 'POST':
+         print("in post")
+        reponame = flask.request.values.get('repo_name') # Your form's
+        print("reponame ",reponame)
+        classname = flask.request.values.get('class_name') # input names
+        class_name = request.form['class_name']
+        print("class name 2",class_name)
 
     try:
         conn = psycopg2.connect(**POSTGRES)
