@@ -25,11 +25,11 @@ db=SQLAlchemy(app)
 def home():
      if flask.request.method == 'POST':
          print("in post")
-        reponame = flask.request.values.get('repo_name') # Your form's
-        print("reponame ",reponame)
-        classname = flask.request.values.get('class_name') # input names
-        class_name = request.form['class_name']
-        print("class name 2",class_name)
+         reponame = flask.request.values.get('repo_name') # Your form's
+         print("reponame ",reponame)
+         classname = flask.request.values.get('class_name') # input names
+         class_name = request.form['class_name']
+         print("class name 2",class_name)
 
     try:
         conn = psycopg2.connect(**POSTGRES)
