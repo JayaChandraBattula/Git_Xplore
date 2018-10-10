@@ -1,7 +1,6 @@
 from flask import Flask
 from flask import render_template, request, flash, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
-from app import db
 from psycopg2.extras import RealDictCursor
 import psycopg2
 import pandas as pd
