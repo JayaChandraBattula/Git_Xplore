@@ -21,12 +21,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://%(user)s:\
 db=SQLAlchemy(app)
 
 
-@app.route("/about")
-def about():
-    title='About'
-    return render_template('about.html',title=title)
-
-@app.route("/webhome_getdata", methods=["GET", "POST"])
+@app.route("/home", methods=["GET", "POST"])
 def webhome_getdata():
     repo_name = request.form['repo_name']
     class_name = request.form['class_name']
@@ -49,8 +44,12 @@ def webhome_getdata():
         df=pd.DataFrame(list(rows))
     cur.close()
     conn.close()
-    return render_template('view.html',table=df.to_html(classes='QueryResult'))
+    return render_template('home.html',table=df.to_html(classes='QueryResult'))
 
+@app.route("/about")
+def about():
+    title='About'
+    return render_template('about.html',title=title)
 
 if (__name__ == "__main__"):
  app.run(host='ec2-52-6-184-3.compute-1.amazonaws.com',debug='true')
