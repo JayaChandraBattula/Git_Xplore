@@ -54,4 +54,4 @@ def webhome_getdata():
 
 
 if (__name__ == "__main__"):
-app.run()
+ app.run(host='ec2-52-6-184-3.compute-1.amazonaws.com',debug='true')
