@@ -1,0 +1,92 @@
+
+<!doctype html>
+<html>
+<head>
+    <title>Git Xplore/Chandra</title>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <style type="text/css">
+
+	#topmenubar {
+		background-color:#7A0000;
+		width:100%;
+		height:50px;
+		color: white;
+		text-align: center;
+		font-size:0.5em;
+		font-family: "Times New Roman", Times, serif;
+		font-size: 18px;
+		padding:5px 5px 8px 0;
+	}
+	#gitexplore {
+		background-color:#990000;
+		width:100%;
+		height:84px;
+		color: white;
+		text-align: center;
+		font-size: 15px;
+		padding-top:5px;
+		padding:1px 5px 10px 0;
+	}
+	#sidebar {
+		color: black;
+		text-align: left;
+		padding:1px 5px 10px 0;
+		height:1000px;
+		width:300px;
+		font-size:11px;
+		background-color:#F5F5F5;
+		padding:5px 5px 15px 0;
+	}
+	input {
+	background-color:#A9A9A9;
+    width: 100%;
+	height:30px;
+	padding:1px 5px 1px 0;
+}
+
+
+    </style>
+
+</head>
+
+<body>
+	<div id="topmenubar">
+
+		<h4> Insight Data Engineering Fellow Program, 2018C
+	</div>
+	<div id="gitexplore">
+
+		<h1> Git Xplore
+
+		<h3> Find dependency mappings in java repos.
+
+	</div>
+
+	<div id="sidebar">
+
+
+		<h1> <u>Search by</u><br><br>
+
+		<form action="/webhome_getdata" method="post">
+			Repository ID:<br>
+		<input type="text" name="repo_id" value=""><br><br>
+			Repository Name:<br>
+		<input type="text" name="repo_name" value=""><br><br>
+			Class Name:<br>
+		<input type="text" name="class_name" value=""><br><br>
+			Method Name:<br>
+		<input type="text" name="method_names" value=""><br><br>
+		<input type="submit" value="Search Git !!">
+		<input type="reset">
+		</form>
+
+
+	</div>
+
+
+</body>
+</html>

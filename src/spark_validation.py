@@ -4,7 +4,7 @@ import re
 import psycopg2
 
 def main():
-    sc = SparkContext( appName='Search_Function')
+    sc = SparkContext( appName='Git_Xplore')
     sqlContext = SQLContext(sc)
 
 
