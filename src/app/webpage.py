@@ -9,18 +9,18 @@ import pandas as pd
 
 app = flask.Flask('GitXplore')
 
-POSTGRES = {
-    'user': 'chandra',
-    'pw': 'Searchfunction',
-    'db': 'mypostgresdb',
-    'host': 'rds-postgresinstance.c5cn8wdvuzrw.us-east-1.rds.amazonaws.com',
-    'port': '5432',
-}
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://%(user)s:\
-%(pw)s@%(host)s:%(port)s/%(db)s' % POSTGRES
-
-db=SQLAlchemy(app)
+# POSTGRES = {
+#     'user': 'chandra',
+#     'pw': 'Searchfunction',
+#     'db': 'mypostgresdb',
+#     'host': 'rds-postgresinstance.c5cn8wdvuzrw.us-east-1.rds.amazonaws.com',
+#     'port': '5432',
+# }
+#
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://%(user)s:\
+# %(pw)s@%(host)s:%(port)s/%(db)s' % POSTGRES
+#
+# db=SQLAlchemy(app)
 
 
 @app.route("/home", methods=["GET", "POST"])
@@ -33,7 +33,8 @@ def home():
          class_name = request.form['class_name']
          print("class name 2",class_name)
     try:
-        conn = psycopg2.connect(**POSTGRES)
+        conn = psycopg2.connect(host="rds-postgresinstance.c5cn8wdvuzrw.us-east-1.rds.amazonaws.com:5432/mypostgresdb",
+                user="chandra", password="Searchfunction")
     except Exception as er:
         print("Unable to connect to the database")
         print(str(er))
