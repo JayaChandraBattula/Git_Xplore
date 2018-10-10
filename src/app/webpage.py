@@ -1,3 +1,4 @@
+import flask
 from flask import Flask
 from flask import *
 from flask import render_template, request, flash, url_for, redirect
@@ -6,7 +7,7 @@ from psycopg2.extras import RealDictCursor
 import psycopg2
 import pandas as pd
 
-app = Flask(__name__)
+app = flask.Flask('GitXplore')
 
 POSTGRES = {
     'user': 'chandra',
