@@ -23,14 +23,13 @@ db=SQLAlchemy(app)
 
 @app.route("/home", methods=["GET", "POST"])
 def home():
-     if flask.request.method == 'POST':
+    if flask.request.method == 'POST':
          print("in post")
          reponame = flask.request.values.get('repo_name') # Your form's
          print("reponame ",reponame)
          classname = flask.request.values.get('class_name') # input names
          class_name = request.form['class_name']
          print("class name 2",class_name)
-
     try:
         conn = psycopg2.connect(**POSTGRES)
     except Exception as er:
@@ -57,4 +56,4 @@ def about():
     return render_template('about.html',title=title)
 
 if (__name__ == "__main__"):
- app.run(host='ec2-52-6-184-3.compute-1.amazonaws.com',debug='true')
+    app.run(host='ec2-52-6-184-3.compute-1.amazonaws.com',debug='true')
