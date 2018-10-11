@@ -54,20 +54,20 @@ def getdata():
         print("results ",results)
         return render_template('view.html', results=results)
 
-    if(reponame != None and methodnames!=None):
-        likeString1 = "%" + reponame + "%"
-        print("likeString1 in method",likeString1)
-        likeString2 = "%" + methodnames + "%"
-        print("likeString2 ",likeString2)
-        # get data from table 'total'
-        cur.execute("SELECT *\
-                       FROM javarepos \
-                      WHERE repo_name like %s AND method_names like %s;",\
-                       (likeString1, likeString2))
-        print("after cur.exe")
-        results=cur.fetchall()
-        print("results ",results)
-        return render_template('view.html', results=results)
+    # if(reponame != None and methodnames!=None):
+    #     likeString1 = "%" + reponame + "%"
+    #     print("likeString1 in method",likeString1)
+    #     likeString2 = "%" + methodnames + "%"
+    #     print("likeString2 ",likeString2)
+    #     # get data from table 'total'
+    #     cur.execute("SELECT *\
+    #                    FROM javarepos \
+    #                   WHERE repo_name like %s AND method_names like %s;",\
+    #                    (likeString1, likeString2))
+    #     print("after cur.exe")
+    #     results=cur.fetchall()
+    #     print("results ",results)
+    #     return render_template('view.html', results=results)
 
     if(reponame != None and classname!=None):
         likeString1 = "%" + reponame + "%"
