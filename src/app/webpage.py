@@ -39,7 +39,9 @@ def getdata():
     print("class name ",classname)
     methodnames = request.form['method_names']
 
-    cur = conn.cursor(cursor_factory=RealDictCursor)
+    #cur = conn.cursor(cursor_factory=RealDictCursor)
+    cur = conn.cursor()
+
     if (reponame != None):
         likeString1 = "'%%" + reponame + "%%'"
         print("likeString1 ",likeString1)
@@ -50,6 +52,12 @@ def getdata():
                        FROM javarepos \
                       WHERE repo_name = %s",\
                        (reponame))
+        print("after cur.exe")
+        results=cur.fetchall()
+        print("results ",results)
+        return render_template('view.html', repoinfo=results)
+
+        
     # if (reponame != None and classname!=None):
     #     likeString1 = "'%%" + reponame + "%%'"
     #     print("likeString1 ",likeString1)
@@ -60,9 +68,7 @@ def getdata():
     #                    FROM javarepos \
     #                   WHERE repo_name like %s AND class_name like %s;",\
     #                    (likeString1, likeString2))
-    results=cur.fetchall()
-    print("results ",results)
-    return render_template('view.html', repoinfo=results)
+
 
 
 
