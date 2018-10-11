@@ -50,7 +50,8 @@ def getdata():
                        FROM javarepos \
                       WHERE repo_name like %s AND class_name like %s;",\
                        (likeString1, likeString2))
-    resultst=cur.fetchall()
+    results=cur.fetchall()
+    print("results ",results)
     return render_template('view.html', repoinfo=results)
 
 
