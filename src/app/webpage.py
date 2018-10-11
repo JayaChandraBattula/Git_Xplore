@@ -80,7 +80,9 @@ def getdata():
         results=cur.fetchall()
         print("results ",results)
         return render_template('view.html', results=results)
-
+    else:
+        results="No input entered"
+        return render_template('view.html', results=results)
 
 @app.route("/about")
 def about():
