@@ -71,7 +71,7 @@ def getdata():
         print("after cur.exe")
         results=cur.fetchall()
         print("results ",results)
-        return render_template('view.html', repoinfo=results)
+        return render_template('view.html', results=results)
 
 
 
