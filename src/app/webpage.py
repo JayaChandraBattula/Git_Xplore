@@ -2,6 +2,7 @@ from flask import render_template, request, flash, url_for, redirect
 from flask import Flask
 import psycopg2
 import psycopg2.extras
+from psycopg2.extras import RealDictCursor
 
 
 app = Flask('Git Xplore')
@@ -31,12 +32,12 @@ def home():
 
 @app.route("/getdata", methods=["GET", "POST"])
 def getdata():
-    repoid = request.args.get('repo_id')
-    reponame = request.args.get('repo_name')
+    repoid = request.form['repo_id']
+    reponame = request.form['repo_name']
     print("repo name ",reponame)
-    classname = request.args.get('class_name')
+    classname = request.form['class_name']
     print("class name ",classname)
-    methodnames = request.args.get('method_names')
+    methodnames = request.form['method_names']
 
     cur = conn.cursor(cursor_factory=RealDictCursor)
     if (reponame != none and classname!=none):
