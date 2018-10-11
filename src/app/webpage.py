@@ -38,11 +38,12 @@ def getdata():
     classname = request.form['class_name']
     print("class name ",classname)
     methodnames = request.form['method_names']
-
+    print("Method name ",methodnames)
     #cur = conn.cursor(cursor_factory=RealDictCursor)
     cur = conn.cursor()
 
-    if(reponame != None and methodnames==None and classname==None):
+    if(reponame != None and classname==None):
+        print("in only repo name")
         likeString1 = "%" + reponame + "%"
         cur.execute("SELECT *\
                        FROM javarepos \
@@ -52,9 +53,9 @@ def getdata():
         results=cur.fetchall()
         print("results ",results)
         return render_template('view.html', results=results)
-    elif (reponame != None and methodnames!=None):
+    elif(reponame != None and methodnames!=None):
         likeString1 = "%" + reponame + "%"
-        print("likeString1 ",likeString1)
+        print("likeString1 in method",likeString1)
         likeString2 = "%" + methodnames + "%"
         print("likeString2 ",likeString2)
         # get data from table 'total'
@@ -66,9 +67,9 @@ def getdata():
         results=cur.fetchall()
         print("results ",results)
         return render_template('view.html', results=results)
-    elif (reponame != None and classname!=None):
+    elif(reponame != None and classname!=None):
         likeString1 = "%" + reponame + "%"
-        print("likeString1 ",likeString1)
+        print("likeString1 in class",likeString1)
         likeString2 = "%" + classname + "%"
         print("likeString2 ",likeString2)
         # get data from table 'total'
