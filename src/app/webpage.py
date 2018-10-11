@@ -18,6 +18,7 @@ from sqlalchemy import and_
 #     'port': '5432',
 # }
 #
+print("started")
 app = Flask('GitXplore')
 try:
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://chandra:Searchfunction@rds-postgresinstance.c5cn8wdvuzrw.us-east-1.rds.amazonaws.com:5432/mypostgresdb'
@@ -26,8 +27,8 @@ except:
 
 db=SQLAlchemy(app)
 
-@app.route("/")
-def index():
+@app.route("/start")
+def start():
     title='Home page'
     return render_template('home.html',title=title)
 
