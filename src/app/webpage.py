@@ -10,3 +10,6 @@ app = Flask('Git Xplore')
 def home():
     title = 'Home'
     return render_template('home.html', title=title)
+
+if (__name__ == "__main__"):
+    app.run(host='ec2-52-6-184-3.compute-1.amazonaws.com',debug='true')
