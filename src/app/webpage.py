@@ -5,7 +5,7 @@ import psycopg2.extras
 from psycopg2.extras import RealDictCursor
 
 
-app = Flask('Git Xplore')
+app = Flask('Git Xplore') #creating a flask app git xplore
 
 # parameters for postgres database connection
 params = {
@@ -22,14 +22,15 @@ except Exception as er:
         print("Unable to connect to the database")
         print(str(er))
 
-
+#routing to home.html page
 @app.route("/")
 @app.route("/home")
 def home():
     title = 'Home'
     return render_template('home.html', title=title)
 
-
+#routing to getdata page where information is queried based on the input entered in the page
+#and the out is rendered to view.html page
 @app.route("/getdata", methods=["GET", "POST"])
 def getdata():
     repoid = request.form['repo_id']
@@ -39,7 +40,6 @@ def getdata():
     print("class name ",classname)
     methodnames = request.form['method_names']
     print("Method name ",methodnames)
-    #cur = conn.cursor(cursor_factory=RealDictCursor)
     cur = conn.cursor()
 
     if(reponame != None and classname==None):
@@ -53,7 +53,8 @@ def getdata():
         results=cur.fetchall()
         print("results ",results)
         return render_template('view.html', results=results)
-    elif(reponame != None and methodnames!=None):
+
+    if(reponame != None and methodnames!=None):
         likeString1 = "%" + reponame + "%"
         print("likeString1 in method",likeString1)
         likeString2 = "%" + methodnames + "%"
@@ -67,7 +68,8 @@ def getdata():
         results=cur.fetchall()
         print("results ",results)
         return render_template('view.html', results=results)
-    elif(reponame != None and classname!=None):
+
+    if(reponame != None and classname!=None):
         likeString1 = "%" + reponame + "%"
         print("likeString1 in class",likeString1)
         likeString2 = "%" + classname + "%"
@@ -81,9 +83,7 @@ def getdata():
         results=cur.fetchall()
         print("results ",results)
         return render_template('view.html', results=results)
-    else:
-        results="No input entered"
-        return render_template('view.html', results=results)
+
 
 @app.route("/about")
 def about():
@@ -92,22 +92,3 @@ def about():
 
 if (__name__ == "__main__"):
     app.run(host='ec2-52-6-184-3.compute-1.amazonaws.com',debug='true')
-
-
-
-
-
-    # if (reponame != None):
-    #     likeString1 = "'%%" + reponame + "%%'"
-    #     print("likeString1 ",likeString1)
-    #     likeString2 = "'%%" + classname + "%%'"
-    #     print("likeString2 ",likeString2)
-    #     # get data from table 'total'
-    #     cur.execute("SELECT *\
-    #                    FROM javarepos \
-    #                   WHERE repo_name = %s",\
-    #                    (reponame))
-    #     print("after cur.exe")
-    #     results=cur.fetchall()
-    #     print("results ",results)
-    #     return render_template('view.html', repoinfo=results)

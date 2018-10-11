@@ -4,16 +4,14 @@ import re
 import psycopg2
 
 def main():
-    sc = SparkContext( appName='Git_Xplore')
+    sc = SparkContext( appName='Git_Xplore') # creating spark Context for the app Git Xplore
     sqlContext = SQLContext(sc)
 
-
+    #Iterating through each file and writing to postgres database
     for i in range(0,1):
         name_num='{0:03}'.format(i)
         fileName="s3a://github-java-sample1/github_javarepo5m-000000000"+name_num+".json"
-        print(fileName)
         eachfile_rdd=sqlContext.read.json(fileName).rdd
-        #print(eachfile_rdd.take(5))
         print("File ",fileName," has ",eachfile_rdd.count()," records.")
         eachrdd_data=eachfile_rdd.map(lambda x: data_retrieval(x))
         hasattr(eachrdd_data,"toDF")
@@ -22,36 +20,22 @@ def main():
 
         df=df.na.drop(thresh=7)
         df.show()
-        #df.write.mode('append').jdbc(url="rds-postgresinstance.c5cn8wdvuzrw.us-east-1.rds.amazonaws.com",
-                    #table="javarepos", properties={"driver": "org.postgresql.Driver"})
-        #postgres_insert(df)
-        #eachrdd_data=eachfile_rdd.map(lambda x: data_retrieval(x)).foreachPartition(postgres_insert)
-        #eachrdd_data.take(5)
-        #mode = "append"
         url="jdbc:postgresql://rds-postgresinstance.c5cn8wdvuzrw.us-east-1.rds.amazonaws.com:5432/mypostgresdb"
         properties = {"user": "chandra","password": "Searchfunction","driver": "org.postgresql.Driver"}
         df.write.mode('append').jdbc(url=url, table="javarepos",properties =properties )
 
 
-
+# Passing each repo through data_retrieval method and returning the class and method names and their dependencies
 def data_retrieval(repo_eachrow):
-
     results=()
     outputdict={}
 
     try:
         repo_content = repo_eachrow[0].encode('ascii','ignore').decode('ascii')
         repo_id = repo_eachrow[1].encode('ascii','ignore').decode('ascii')
-        print("repo_id",repo_id)
-        #log.warn("repo_id "repo_id)
         repo_path = repo_eachrow[2].encode('ascii','ignore').decode('ascii')
-        #log.warn("repo_path "repo_path)
         repo_name = repo_eachrow[3].encode('ascii','ignore').decode('ascii')
-        print("repo_name",repo_name)
-        #log.warn("repo_name "repo_name)
         repo_size = repo_eachrow[4].encode('ascii','ignore').decode('ascii')
-        print("repo_size", repo_size)
-        #log.warn("size "repo_size)
     except:
         return results
 
@@ -61,47 +45,11 @@ def data_retrieval(repo_eachrow):
 
     temptuple=(repo_name,repo_id,repo_path,repo_size,str(classname_foreachrepo),str(methodname_foreachrepo),str(methoddependencies_foreachrepo))
 
-    """final_outputdict = dict()
-    final_outputdict["repo_name"] =str(repo_name)
-    final_outputdict["repo_id"] =str(repo_id)
-    final_outputdict["repo_path"] =str(repo_path)
-    final_outputdict["repo_size"] =str(repo_size)
-    final_outputdict["class_name"] = str(classname_foreachrepo)
-    final_outputdict["method_names"] = str(methodname_foreachrepo)
-    final_outputdict["method_dependencies"] = str(methoddependencies_foreachrepo)"""
-
     results=results +temptuple
-
     print(results)
-
     return results
 
-
-# def postgres_insert(results):
-#     #connect postgresql for each worker, inorder to insert to table
-#     try:
-#         conn = psycopg2.connect(host="rds-postgresinstance.c5cn8wdvuzrw.us-east-1.rds.amazonaws.com",
-#                                 dbname="mypostgresdb",user="chandra", password="Searchfunction")
-#     except:
-#         print("Error in database connection")
-#
-#     cur = conn.cursor()
-#
-#     for x in results:
-#         if (x == ()):
-#             log.warn("X values in post method  ",{x})
-#             continue
-#         else:
-#             try: ## insert to postgresql database
-#                 cur.executemany("INSERT INTO javarepos(repo_name, repo_id, repo_path, repo_size, class_name, method_names, method_dependencies ) \
-#                      VALUES (%s,%s,%s, %s,%s, %s,%s)",x)
-#             except:
-#                 print("Postgres Insertion Error ")
-#             conn.commit()
-#     cur.close()
-#     conn.close()
-
-
+# Getting class names from each repo
 def get_classname(each_repo):
     class_name=set()
     content_list=each_repo.split('\n')
@@ -113,17 +61,14 @@ def get_classname(each_repo):
                 start = ' class '
                 end = ' '
                 class_name.add(re.search('%s(.*)%s'% (start,end), each_line).group(1))
-                #print(class_name)
-                #outputdict["Class_Name"].append(str(class_name))
             except AttributeError:
-                #outputdict["Class_Name"].append(str(class_name))
-                #class_name.append('no class is present')
                 continue
     if not class_name:
         class_name.add("no class name")
     return class_name
 
 
+# Getting method names from each repo
 def get_methodname_dependencies(each_repo):
     content_list = each_repo.split('\n')
     methodname_set = set()
