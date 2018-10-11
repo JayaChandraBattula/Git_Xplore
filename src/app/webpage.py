@@ -59,9 +59,9 @@ def getdata():
 
 
     if (reponame != None and classname!=None):
-        likeString1 = "'%" + reponame + "%'"
+        likeString1 = "%" + reponame + "%"
         print("likeString1 ",likeString1)
-        likeString2 = "'%" + classname + "%'"
+        likeString2 = "%" + classname + "%"
         print("likeString2 ",likeString2)
         # get data from table 'total'
         cur.execute("SELECT *\
