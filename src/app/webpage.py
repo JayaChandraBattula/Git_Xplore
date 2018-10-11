@@ -47,7 +47,7 @@ def getdata():
         print("likeString2 ",likeString2)
         # get data from table 'total'
         cur.execute("SELECT *\
-                       FROM total \
+                       FROM javarepos \
                       WHERE repo_name like %s AND class_name like %s;",\
                        (likeString1, likeString2))
     resultst=cur.fetchall()
