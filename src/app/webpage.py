@@ -42,23 +42,7 @@ def getdata():
     #cur = conn.cursor(cursor_factory=RealDictCursor)
     cur = conn.cursor()
 
-    if (reponame != None):
-        likeString1 = "'%%" + reponame + "%%'"
-        print("likeString1 ",likeString1)
-        likeString2 = "'%%" + classname + "%%'"
-        print("likeString2 ",likeString2)
-        # get data from table 'total'
-        cur.execute("SELECT *\
-                       FROM javarepos \
-                      WHERE repo_name = %s",\
-                       (reponame))
-        print("after cur.exe")
-        results=cur.fetchall()
-        print("results ",results)
-        return render_template('view.html', repoinfo=results)
-
-        
-    # if (reponame != None and classname!=None):
+    # if (reponame != None):
     #     likeString1 = "'%%" + reponame + "%%'"
     #     print("likeString1 ",likeString1)
     #     likeString2 = "'%%" + classname + "%%'"
@@ -66,8 +50,24 @@ def getdata():
     #     # get data from table 'total'
     #     cur.execute("SELECT *\
     #                    FROM javarepos \
-    #                   WHERE repo_name like %s AND class_name like %s;",\
-    #                    (likeString1, likeString2))
+    #                   WHERE repo_name = %s",\
+    #                    (reponame))
+    #     print("after cur.exe")
+    #     results=cur.fetchall()
+    #     print("results ",results)
+    #     return render_template('view.html', repoinfo=results)
+
+
+    if (reponame != None and classname!=None):
+        likeString1 = "'%" + reponame + "%'"
+        print("likeString1 ",likeString1)
+        likeString2 = "'%" + classname + "%'"
+        print("likeString2 ",likeString2)
+        # get data from table 'total'
+        cur.execute("SELECT *\
+                       FROM javarepos \
+                      WHERE repo_name like %s AND class_name like %s;",\
+                       (likeString1, likeString2))
 
 
 
