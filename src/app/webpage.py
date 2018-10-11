@@ -42,23 +42,31 @@ def getdata():
     #cur = conn.cursor(cursor_factory=RealDictCursor)
     cur = conn.cursor()
 
-    # if (reponame != None):
-    #     likeString1 = "'%%" + reponame + "%%'"
-    #     print("likeString1 ",likeString1)
-    #     likeString2 = "'%%" + classname + "%%'"
-    #     print("likeString2 ",likeString2)
-    #     # get data from table 'total'
-    #     cur.execute("SELECT *\
-    #                    FROM javarepos \
-    #                   WHERE repo_name = %s",\
-    #                    (reponame))
-    #     print("after cur.exe")
-    #     results=cur.fetchall()
-    #     print("results ",results)
-    #     return render_template('view.html', repoinfo=results)
-
-
-    if (reponame != None and classname!=None):
+    if(reponame != None and methodnames==None and classname==None):
+        likeString1 = "%" + reponame + "%"
+        cur.execute("SELECT *\
+                       FROM javarepos \
+                      WHERE repo_name like %s ;",\
+                       (likeString1))
+        print("after cur.exe")
+        results=cur.fetchall()
+        print("results ",results)
+        return render_template('view.html', results=results)
+    elif (reponame != None and methodnames!=None):
+        likeString1 = "%" + reponame + "%"
+        print("likeString1 ",likeString1)
+        likeString2 = "%" + methodnames + "%"
+        print("likeString2 ",likeString2)
+        # get data from table 'total'
+        cur.execute("SELECT *\
+                       FROM javarepos \
+                      WHERE repo_name like %s AND method_names like %s;",\
+                       (likeString1, likeString2))
+        print("after cur.exe")
+        results=cur.fetchall()
+        print("results ",results)
+        return render_template('view.html', results=results)
+    elif (reponame != None and classname!=None):
         likeString1 = "%" + reponame + "%"
         print("likeString1 ",likeString1)
         likeString2 = "%" + classname + "%"
@@ -74,7 +82,6 @@ def getdata():
         return render_template('view.html', results=results)
 
 
-
 @app.route("/about")
 def about():
     title = 'About'
@@ -82,3 +89,22 @@ def about():
 
 if (__name__ == "__main__"):
     app.run(host='ec2-52-6-184-3.compute-1.amazonaws.com',debug='true')
+
+
+
+
+
+    # if (reponame != None):
+    #     likeString1 = "'%%" + reponame + "%%'"
+    #     print("likeString1 ",likeString1)
+    #     likeString2 = "'%%" + classname + "%%'"
+    #     print("likeString2 ",likeString2)
+    #     # get data from table 'total'
+    #     cur.execute("SELECT *\
+    #                    FROM javarepos \
+    #                   WHERE repo_name = %s",\
+    #                    (reponame))
+    #     print("after cur.exe")
+    #     results=cur.fetchall()
+    #     print("results ",results)
+    #     return render_template('view.html', repoinfo=results)
