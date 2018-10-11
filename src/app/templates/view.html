@@ -1,17 +1,11 @@
 
-<!doctype html>
-<html>
-<head>
-<title></title>
-<meta charset="utf-8" />
-</head>
+{% block content %}
 
-<body>
-{% for repo in resultset %}
-<li>{{user.repo_id}}
+<h1>Repo Info</h1>
+<table>
+<tr><th>Repo Name</th><th>Repo Id</th><th>Repo Path</th><th>Repo size</th><th>Class Name</th><th>Method Name</th><th>method_dependencies</th></tr>
+{% for result in results %}
+<tr><td>{{result[0]}}</td><td>{{result[1]}}</td><td>{{result[2]}}</td><td>{{result[3]}}</td><td>{{result[4]}}</td><td>{{result[5]}}</td><td>{{result[6]}}</td></tr>
+</table>
 
-{% endfor %}
-
-
-</body>
-</html>
+{% endblock content %}
