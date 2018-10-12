@@ -46,32 +46,7 @@ def getdata():
         results=[]
         print("results ",results)
         return render_template('view.html', results=results)
-
-
-    if(not reponame and classname != None):
-        print("in only class name")
-        likeString1 = "%" + classname + "%"
-        print("class name when no repo id and only class name given",classname)
-        cur.execute("SELECT *\
-                       FROM javarepos \
-                      WHERE class_name like %s ;",\
-                       (likeString1))
-        results=cur.fetchall()
-        print("results ",results)
-        return render_template('view.html', results=results)
-
-    if( reponame != None and not classname):
-        print("in only repo name")
-        likeString1 = "%" + reponame + "%"
-        cur.execute("SELECT *\
-                       FROM javarepos \
-                      WHERE repo_name like %s ;",\
-                       (likeString1))
-        results=cur.fetchall()
-        print("results ",results)
-        return render_template('view.html', results=results)
-
-    if(reponame != None and classname!=None):
+    elif(reponame != None and classname!=None):
         print("in both repo name and class name")
         likeString1 = "%" + reponame + "%"
         print("likeString1 in reponame",likeString1)
@@ -86,6 +61,37 @@ def getdata():
         results=cur.fetchall()
         print("results ",results)
         return render_template('view.html', results=results)
+    elif(reponame != None and classname==None):
+        print("in both repo name ")
+        likeString1 = "%" + reponame + "%"
+        print("likeString1 in reponame",likeString1)
+        # get data from table 'total'
+        cur.execute("SELECT *\
+                       FROM javarepos \
+                      WHERE repo_name like %s;",\
+                       (likeString1))
+        print("after cur.exe")
+        results=cur.fetchall()
+        print("results ",results)
+        return render_template('view.html', results=results)
+    elif(reponame == None and classname!=None):
+        print("in class name")
+        likeString1 = "%" + classname + "%"
+        print("likeString1 in classname",likeString1)
+        # get data from table 'total'
+        cur.execute("SELECT *\
+                       FROM javarepos \
+                      WHERE class_name like %s;",\
+                       (likeString1))
+        print("after cur.exe")
+        results=cur.fetchall()
+        print("results ",results)
+        return render_template('view.html', results=results)
+    else:
+        results=[]
+        print("results ",results)
+        return render_template('view.html', results=results)
+
 
 @app.route("/about")
 def about():
