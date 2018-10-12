@@ -42,12 +42,25 @@ def getdata():
     print("Method name ",methodnames)
     cur = conn.cursor()
 
-    if(reponame != None and classname==None):
+    if(reponame != '' and classname == ''):
         print("in only repo name")
         likeString1 = "%" + reponame + "%"
         cur.execute("SELECT *\
                        FROM javarepos \
                       WHERE repo_name like %s ;",\
+                       (likeString1))
+        print("after cur.exe")
+        results=cur.fetchall()
+        print("results ",results)
+        return render_template('view.html', results=results)
+
+
+    if(reponame == '' and classname != ''):
+        print("in only class name")
+        likeString1 = "%" + reponame + "%"
+        cur.execute("SELECT *\
+                       FROM javarepos \
+                      WHERE class_name like %s ;",\
                        (likeString1))
         print("after cur.exe")
         results=cur.fetchall()
