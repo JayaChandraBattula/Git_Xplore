@@ -16,6 +16,7 @@ params = {
     'port': 5432
 }
 
+#Connecting to postgres database
 try:
     conn = psycopg2.connect(**params)
 except Exception as er:
@@ -42,10 +43,12 @@ def getdata():
     print("Method name ",methodnames)
     cur = conn.cursor()
 
+    #return type if reponame and classname are not entered
     if(not reponame and not classname):
         results=[]
         print("results ",results)
         return render_template('view.html', results=results)
+    #return type if both reponame and class name are given
     elif(reponame != None and classname!=None):
         print("in both repo name and class name")
         likeString1 = "%" + reponame + "%"
@@ -61,6 +64,7 @@ def getdata():
         results=cur.fetchall()
         print("results ",results)
         return render_template('view.html', results=results)
+    #return type if both reponame is given and class name is not given
     elif(reponame != None and classname==None):
         print("in both repo name ")
         likeString1 = "%" + reponame + "%"
@@ -74,6 +78,7 @@ def getdata():
         results=cur.fetchall()
         print("results ",results)
         return render_template('view.html', results=results)
+    #return type if both reponame is not given and class name is  given
     elif(reponame == None and classname!=None):
         print("in class name")
         likeString1 = "%" + classname + "%"
@@ -92,11 +97,12 @@ def getdata():
         print("results ",results)
         return render_template('view.html', results=results)
 
-
+#routing to about page
 @app.route("/about")
 def about():
     title = 'About'
     return render_template('about.html', title=title)
 
+#routing flask app to the EC2 instance
 if (__name__ == "__main__"):
     app.run(host='ec2-52-6-184-3.compute-1.amazonaws.com',debug='true')

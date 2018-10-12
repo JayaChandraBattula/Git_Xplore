@@ -20,6 +20,7 @@ def main():
 
         df=df.na.drop(thresh=7)
         df.show()
+        #connecting to the postgres DB and inserting the dataframe for each file into the database
         url="jdbc:postgresql://rds-postgresinstance.c5cn8wdvuzrw.us-east-1.rds.amazonaws.com:5432/mypostgresdb"
         properties = {"user": "chandra","password": "Searchfunction","driver": "org.postgresql.Driver"}
         df.write.mode('append').jdbc(url=url, table="javarepos",properties =properties )
@@ -68,7 +69,7 @@ def get_classname(each_repo):
     return class_name
 
 
-# Getting method names from each repo
+# Getting method names and dependencies from each repo
 def get_methodname_dependencies(each_repo):
     content_list = each_repo.split('\n')
     methodname_set = set()

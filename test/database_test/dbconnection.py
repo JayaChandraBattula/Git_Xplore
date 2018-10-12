@@ -11,8 +11,8 @@ def postgres_insert(results):
     #connect postgresql , inorder to insert to table
     # connect postgresql for each worker, inorder to insert to table
     try:
-        conn = psycopg2.connect(host="rds-postgresinstance.c5cn8wdvuzrw.us-east-1.rds.amazonaws.com",
-                                dbname="mypostgresdb", user="chandra", password="Searchfunction")
+        conn = psycopg2.connect(host="************",
+                                dbname="mypostgresdb", user="chandra", password="********")
     except:
         print("Error in database connection")
 
