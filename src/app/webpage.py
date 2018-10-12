@@ -51,6 +51,7 @@ def getdata():
     if(not reponame and classname != None):
         print("in only class name")
         likeString1 = "%" + classname + "%"
+        print("class name when no repo id and only class name given",classname)
         cur.execute("SELECT *\
                        FROM javarepos \
                       WHERE class_name like %s ;",\
