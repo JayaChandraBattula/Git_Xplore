@@ -43,7 +43,7 @@ def getdata():
     cur = conn.cursor()
 
     if(not reponame and not classname):
-        results="Enter Either Repo name or class name"
+        results=[]
         print("results ",results)
         return render_template('view.html', results=results)
 
@@ -61,6 +61,7 @@ def getdata():
         return render_template('view.html', results=results)
 
     if( reponame != None and not classname):
+        print("in only repo name")
         likeString1 = "%" + reponame + "%"
         cur.execute("SELECT *\
                        FROM javarepos \
@@ -71,10 +72,11 @@ def getdata():
         return render_template('view.html', results=results)
 
     if(reponame != None and classname!=None):
+        print("in both repo name and class name")
         likeString1 = "%" + reponame + "%"
-        print("likeString1 in class",likeString1)
+        print("likeString1 in reponame",likeString1)
         likeString2 = "%" + classname + "%"
-        print("likeString2 ",likeString2)
+        print("likeString2 in class",likeString2)
         # get data from table 'total'
         cur.execute("SELECT *\
                        FROM javarepos \
