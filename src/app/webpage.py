@@ -42,45 +42,32 @@ def getdata():
     print("Method name ",methodnames)
     cur = conn.cursor()
 
-    if(reponame != '' and classname == ''):
-        print("in only repo name")
+    if(not reponame and not classname):
+        results="Enter Either Repo name or class name"
+        print("results ",results)
+        return render_template('view.html', results=results)
+
+
+    if(not reponame and classname != None):
+        print("in only class name")
+        likeString1 = "%" + classname + "%"
+        cur.execute("SELECT *\
+                       FROM javarepos \
+                      WHERE class_name like %s ;",\
+                       (likeString1))
+        results=cur.fetchall()
+        print("results ",results)
+        return render_template('view.html', results=results)
+
+    if( reponame != None and not classname):
         likeString1 = "%" + reponame + "%"
         cur.execute("SELECT *\
                        FROM javarepos \
                       WHERE repo_name like %s ;",\
                        (likeString1))
-        print("after cur.exe")
         results=cur.fetchall()
         print("results ",results)
         return render_template('view.html', results=results)
-
-
-    if(reponame == '' and classname != ''):
-        print("in only class name")
-        likeString1 = "%" + reponame + "%"
-        cur.execute("SELECT *\
-                       FROM javarepos \
-                      WHERE class_name like %s ;",\
-                       (likeString1))
-        print("after cur.exe")
-        results=cur.fetchall()
-        print("results ",results)
-        return render_template('view.html', results=results)
-
-    # if(reponame != None and methodnames!=None):
-    #     likeString1 = "%" + reponame + "%"
-    #     print("likeString1 in method",likeString1)
-    #     likeString2 = "%" + methodnames + "%"
-    #     print("likeString2 ",likeString2)
-    #     # get data from table 'total'
-    #     cur.execute("SELECT *\
-    #                    FROM javarepos \
-    #                   WHERE repo_name like %s AND method_names like %s;",\
-    #                    (likeString1, likeString2))
-    #     print("after cur.exe")
-    #     results=cur.fetchall()
-    #     print("results ",results)
-    #     return render_template('view.html', results=results)
 
     if(reponame != None and classname!=None):
         likeString1 = "%" + reponame + "%"
@@ -96,7 +83,6 @@ def getdata():
         results=cur.fetchall()
         print("results ",results)
         return render_template('view.html', results=results)
-
 
 @app.route("/about")
 def about():
