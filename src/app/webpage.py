@@ -55,7 +55,7 @@ def getdata():
         # get data from table 'total'
         cur.execute("SELECT *\
                        FROM javarepos \
-                      WHERE repo_name like %s AND class_name like %s;",\
+                      WHERE repo_name iLIKE %s AND class_name iLIKE %s;",\
                        (likeString1, likeString2))
         print("after cur.exe")
         results=cur.fetchall()
@@ -68,7 +68,7 @@ def getdata():
         # get data from table 'total'
         cur.execute("SELECT *\
                        FROM javarepos \
-                      WHERE repo_name like %s;",\
+                      WHERE repo_name iLIKE %s;",\
                        (likeString1))
         print("after cur.exe")
         results=cur.fetchall()
@@ -81,7 +81,7 @@ def getdata():
         # get data from table 'total'
         cur.execute("SELECT *\
                        FROM javarepos \
-                      WHERE class_name like %s;",\
+                      WHERE class_name iLIKE %s;",\
                        (likeString1))
         print("after cur.exe")
         results=cur.fetchall()
