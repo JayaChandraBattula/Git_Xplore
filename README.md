@@ -11,9 +11,22 @@
 - Data is then migrated from GCP to Amazon S3 bucket with the help of google command line tool gsutil.
 
 ### Data pipeline
-![Image Data pipeline](images/pipeline.png)
+![Image Data pipeline](images/capture.jpg)
 
 ### Git hub datastore for Java repos
 [Google Big Query API](https://bigquery.cloud.google.com/table/bigquery-public-data:github_repos.contents?pli=1&tab=preview)
 
 ### Project Requirements
+* languages
+  *python 3.6
+* Technologies
+  *spark
+  *postgresSQL
+  *flask
+* Third Party Libraries
+  *AWS CLI
+  *gsutil
+  *psycopg2
+
+### Author
+Jaya Chandra
