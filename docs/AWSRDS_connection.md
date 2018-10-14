@@ -1,10 +1,11 @@
 ### Connect to AWS RDS PostgreSQL database
+
 1. launch an AWS RDS instance
 2. install `psycopgs` on every node of spark-cluster
     ```
     pip install psycopg2-binary
     ```
-3. allconnection parameters
+3. all connection parameters
     - master-username,
     - password,
     - endpoint,
