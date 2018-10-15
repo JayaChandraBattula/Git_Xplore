@@ -50,31 +50,24 @@ def getdata():
         return render_template('view.html', results=results)
     #return type if both reponame and class name are given
     elif(reponame != None and classname!=None):
-        print("in both repo name and class name")
         likeString1 = "%" + reponame + "%"
-        print("likeString1 in reponame",likeString1)
         likeString2 = "%" + classname + "%"
-        print("likeString2 in class",likeString2)
         # get data from table 'total'
         cur.execute("SELECT *\
                        FROM javarepos \
                       WHERE repo_name iLIKE %s AND class_name iLIKE %s;",\
                        (likeString1, likeString2))
-        print("after cur.exe")
         results=cur.fetchall()
         print("results ",results)
         return render_template('view.html', results=results)
     #return type if both reponame is given and class name is not given
     elif(reponame != None and classname==None):
-        print("in both repo name ")
         likeString1 = "%" + reponame + "%"
-        print("likeString1 in reponame",likeString1)
         # get data from table 'total'
         cur.execute("SELECT *\
                        FROM javarepos \
                       WHERE repo_name iLIKE %s;",\
                        (likeString1))
-        print("after cur.exe")
         results=cur.fetchall()
         print("results ",results)
         return render_template('view.html', results=results)
@@ -88,7 +81,6 @@ def getdata():
                        FROM javarepos \
                       WHERE class_name iLIKE %s;",\
                        (likeString1))
-        print("after cur.exe")
         results=cur.fetchall()
         print("results ",results)
         return render_template('view.html', results=results)
