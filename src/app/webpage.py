@@ -11,8 +11,8 @@ app = Flask('Git Xplore') #creating a flask app git xplore
 params = {
     'database': 'mypostgresdb',
     'user': 'chandra',
-    'password': 'Searchfunction',
-    'host': 'rds-postgresinstance.c5cn8wdvuzrw.us-east-1.rds.amazonaws.com',
+    'password': '*******',
+    'host': '*********',
     'port': 5432
 }
 
@@ -97,4 +97,4 @@ def about():
 
 #routing flask app to the EC2 instance
 if (__name__ == "__main__"):
-    app.run(host='ec2-52-6-184-3.compute-1.amazonaws.com',debug='true')
+    app.run(host='**********',debug='true')
