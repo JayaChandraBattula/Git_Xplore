@@ -1,2 +1,3 @@
-/src
-/src/configfile.py
+configfile:wq.py/
+src/configfile.py/
+src/configfile.py
