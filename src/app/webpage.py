@@ -7,6 +7,9 @@ from psycopg2.extras import RealDictCursor
 
 app = Flask('Git Xplore') #creating a flask app git xplore
 
+parser=ConfigParser()
+parser.read(parse.ini)
+
 # parameters for postgres database connection
 params = {
     'database': 'mypostgresdb',
@@ -95,6 +98,12 @@ def about():
     title = 'About'
     return render_template('about.html', title=title)
 
+#routing to go back page
+@app.route("/go back")
+def about():
+    title = 'Go back'
+    return render_template('about.html', title=title)
+
 #routing flask app to the EC2 instance
 if (__name__ == "__main__"):
-    app.run(host='**********',debug='true')
+    app.run(host='parser.get('ConfigSparkMain','host')',debug='true',port=80)

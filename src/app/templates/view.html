@@ -7,7 +7,6 @@
 table, td, th {
     border: 2px solid red;
     text-align: left;
-    background-color: #990000;
 }
 
 table {
@@ -22,13 +21,13 @@ tr:nth-child(even) {background-color: #FDE4E4;}
 </style>
 </head>
 <body>
-<h1>Repo Info</h1>
-<table>
-<tr><th>Repo Name</th><th>Repo Id</th><th>Repo Path</th><th>Repo size</th><th>Class Name</th><th>Method Name</th><th>Method Dependencies</th></tr>
-{% for result in results %}
-<tr><td>{{result[0]}}</td><td>{{result[1]}}</td><td>{{result[2]}}</td><td>{{result[3]}}</td><td>{{result[4]}}</td><td>{{result[5]}}</td><td>{{result[6]}}</td></tr>
-{% endfor %}
-</table>
+  <h2>Repo Information</h2>
+  <table>
+  <tr><th>Repo Name</th><th>Class Name</th><th>Method Name</th><th>Method Dependencies</th><th>Repo path</th><th>Repo Id</th><th>Repo Size</th></tr>
+  {% for result in results %}
+  <tr><td>{{result[0]}}</td><td>{{result[4]}}</td><td>{{result[5]}}</td><td>{{result[6]}}</td><td>{{result[2]}}</td><td>{{result[1]}}</td><td>{{result[3]}}</td></tr>
+  {% endfor %}
+  </table>
 
 {% endblock content %}
 </body>

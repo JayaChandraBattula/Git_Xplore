@@ -2,15 +2,21 @@ from pyspark import SparkContext
 from pyspark import SQLContext
 import re
 import psycopg2
+from configparser import ConfigParser
+
+
 
 def main():
     sc = SparkContext( appName='Git_Xplore') # creating spark Context for the app Git Xplore
     sqlContext = SQLContext(sc)
 
+    parser=ConfigParser()
+    parser.read(parse.ini)
+
     #Iterating through each file and writing to postgres database
     for i in range(0,1):
         name_num='{0:03}'.format(i)
-        fileName="s3a://github-java-sample1/github_javarepo5m-000000000"+name_num+".json"
+        fileName="s3a://parser.get('ConfigSparkMain','bucketname')/github_javarepo5m-000000000"+name_num+".json"
         eachfile_rdd=sqlContext.read.json(fileName).rdd
         print("File ",fileName," has ",eachfile_rdd.count()," records.")
         eachrdd_data=eachfile_rdd.map(lambda x: data_retrieval(x))
@@ -21,8 +27,8 @@ def main():
         df=df.na.drop(thresh=7)
         df.show()
         #connecting to the postgres DB and inserting the dataframe for each file into the database
-        url="jdbc:postgresql://*************************:5432/mypostgresdb"
-        properties = {"user": "chandra","password": "*********","driver": "org.postgresql.Driver"}
+        url="parser.get('params','host'):5432/mypostgresdb"
+        properties = {"user": "chandra","password": "parser.get('params','uer')","driver": "org.postgresql.Driver"}
         df.write.mode('append').jdbc(url=url, table="javarepos",properties =properties )
 
 
@@ -57,7 +63,8 @@ def get_classname(each_repo):
     print("length of content list for a row",len(content_list))
     for line in content_list:
         each_line=line.lstrip()
-        if ((each_line.startswith('public')) or (each_line.startswith('private')) or (each_line.startswith('static'))):
+        if ((each_line.startswith('public')) or (each_line.startswith('private'))
+            or (each_line.startswith('static'))):
             try:
                 start = ' class '
                 end = ' '
